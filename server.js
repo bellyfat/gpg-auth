@@ -11,10 +11,13 @@ var fs = require("fs");
 http.createServer(
   function(request, response) {
     response.writeHead(200, {'Content-Type': 'text/html'});
-    response.write('Query: ' + getQuery(request, "hello"));
+    response.write('URL: ' + getQuery(request, "hello"));
 
-    encrypt();
-    decrypt();
+    if(request.url === "/encrypt") {
+      encrypt();
+    } else if(request.url === "/decrypt") {
+      decrypt();
+    }
 
     response.end(); // End's Response
     //console.log('Date: ' + dt.myDateTime());
