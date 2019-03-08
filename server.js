@@ -4,9 +4,10 @@ var host = 'localhost'; // '0.0.0.0' for all interfaces
 var port = 8080;
 
 var http = require('http');
-var dt = require('./server_modules/date');
-var gpg = require('gpg');
-var fs = require("fs");
+var url = require('url');
+
+//var dt = require('./server_modules/date');
+var cryptography = require('./server_modules/cryptography');
 
 http.createServer(
   function(request, response) {
@@ -14,49 +15,17 @@ http.createServer(
     response.write('URL: ' + getQuery(request, "hello"));
 
     if(request.url === "/encrypt") {
-      encrypt();
+      cryptography.encrypt("github");
     } else if(request.url === "/decrypt") {
-      decrypt();
+      cryptography.decrypt("github");
     }
 
-    response.end(); // End's Response
+    response.end(); // End Response
     //console.log('Date: ' + dt.myDateTime());
   }
 ).listen(port, host);
 
 function getQuery(request, query) {
-  return request.url;
+  return url.parse(request.url, true).query[query];
 }
 
-function encrypt() {
-  var mysecret = 'Hello World';
-  var args = [
-    '--default-key', 'github',
-    '--recipient', 'github',
-    '--armor',
-    '--trust-model', 'always'
-  ];
-  gpg.encrypt(mysecret, args, function(err, data){
-    //console.log(data);
-    fs.writeFile("temp.txt", data, function(err, data) {
-      if (err) console.log(err);
-        console.log("Successfully Written to File.");
-      });
-  });
-}
-
-function decrypt() {
-  var args = [
-    '--default-key', 'github',
-    '--recipient', 'github',
-    '--armor',
-    '--trust-model', 'always'
-  ];
-
-  fs.readFile("temp.txt", function(err, buf) {
-    filecontents = buf.toString();
-    gpg.decrypt(filecontents, args, function(err, contents){
-      console.log(contents.toString());
-    });
-  });
-}
