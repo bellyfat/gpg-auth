@@ -1,0 +1,10 @@
+{
+  "name": "gpg-auth",
+  "description": "An attempt at getting rid of password authentication on the web!!!",
+  "author": "Alex Contento <node.js@senorcontento.com>",
+  "author": "Alex Contento <bagome0054@ung.edu>",
+  "dependencies": {
+    "gpg": "0.6.x",
+  },
+  "engine": "node >= 11.8.0"
+}
