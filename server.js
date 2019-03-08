@@ -16,12 +16,12 @@ http.createServer(
     //response.write('URL: ' + getQuery(request, "hello"));
 
     if(request.url === "/encrypt") {
-      cryptography.encrypt("github", function(data) {
+      cryptography.encrypt("github", "Hello There!!!", function(data) {
         response.write(data);
         response.end(); // End Response
       });
     } else if(request.url === "/decrypt") {
-      cryptography.decrypt("github", function(data) {
+      cryptography.decrypt("github", "Encrypted Message Goes Here!!!", function(data) {
         response.write(data.toString());
         response.end(); // End Response
       });
