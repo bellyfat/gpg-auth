@@ -1,4 +1,6 @@
 // https://www.w3schools.com/nodejs/
+// https://eloquentjavascript.net/11_async.html - Very Useful for Conceptualizing ASync Operations
+// https://blog.risingstack.com/node-hero-async-programming-in-node-js/ - Also Helps When You Just Don't Get It
 
 var host = 'localhost'; // '0.0.0.0' for all interfaces
 var port = 8080;
@@ -6,22 +8,24 @@ var port = 8080;
 var http = require('http');
 var url = require('url');
 
-//var dt = require('./server_modules/date');
 var cryptography = require('./server_modules/cryptography');
 
 http.createServer(
   function(request, response) {
     response.writeHead(200, {'Content-Type': 'text/html'});
-    response.write('URL: ' + getQuery(request, "hello"));
+    //response.write('URL: ' + getQuery(request, "hello"));
 
     if(request.url === "/encrypt") {
-      cryptography.encrypt("github");
+      cryptography.encrypt("github", function(data) {
+        response.write(data);
+        response.end(); // End Response
+      });
     } else if(request.url === "/decrypt") {
-      cryptography.decrypt("github");
+      cryptography.decrypt("github", function(data) {
+        response.write(data.toString());
+        response.end(); // End Response
+      });
     }
-
-    response.end(); // End Response
-    //console.log('Date: ' + dt.myDateTime());
   }
 ).listen(port, host);
 
