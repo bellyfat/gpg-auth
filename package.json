@@ -7,7 +7,7 @@
     "url": "https://web.senorcontento.com/"
   },
   "dependencies": {
-    "gpg": "^0.6.0",
+    "gpg": "^0.6.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"

@@ -14,36 +14,26 @@ var cryptography = require('./server_modules/cryptography');
 
 http.createServer(
   function(request, response) {
-    //response.write('URL: ' + getQuery(request, "hello"));
+    var validated = getQuery(request, "key") && getQuery(request, "message") ? true : false;
 
-    if(getURL(request) === "/favicon.ico") {
+    if(getURL(request) === "/encrypt") {
+        if(validated) encrypt(response, request);
+        else failme(response, "You are missing either the parameter key or message!!!");
+    } else if(getURL(request) === "/decrypt") {
+        if(validated) decrypt(response, request);
+        else failme(response, "You are missing either the parameter key or message!!!");
+    } else if(getURL(request) === "/sign") {
+        if(validated) sign(response, request);
+        else failme(response, "You are missing either the parameter key or message!!!");
+    } else if(getURL(request) === "/verify") {
+        if(validated) verify(response, request);
+        else failme(response, "You are missing either the parameter key or message!!!");
+    }
+
+    else if(getURL(request) === "/favicon.ico") {
       response.writeHead(200, {'Content-Type': 'image/x-icon'});
       response.write(getIcon('./images/ico/server.ico'));
       response.end(); // End Response
-    } else if(getURL(request) === "/encrypt") {
-      cryptography.encrypt("github", "Hello There!!!", function(data) {
-        response.writeHead(200, {'Content-Type': 'text/plain'});
-        response.write(data);
-        response.end(); // End Response
-      });
-    } else if(getURL(request) === "/decrypt") {
-      response.writeHead(200, {'Content-Type': 'text/plain'});
-      cryptography.decrypt("github", encrypted_demo, function(data) {
-        response.write(data.toString());
-        response.end(); // End Response
-      });
-    } else if(getURL(request) === "/sign") {
-      response.writeHead(200, {'Content-Type': 'text/plain'});
-      cryptography.sign("github", encrypted_demo, function(data) {
-        response.write(data.toString());
-        response.end(); // End Response
-      });
-    } else if(getURL(request) === "/verify") {
-      response.writeHead(200, {'Content-Type': 'text/plain'});
-      cryptography.verify("github", encrypted_demo, function(data) {
-        response.write(data.toString());
-        response.end(); // End Response
-      });
     } else {
       response.writeHead(404, {'Content-Type': 'text/plain'});
       response.write("Path Does Not Exist!!!");
@@ -51,6 +41,44 @@ http.createServer(
     }
   }
 ).listen(port, host);
+
+function failme(response, error) {
+  response.writeHead(200, {'Content-Type': 'text/plain'});
+  response.write(error);
+  response.end(); // End Response
+}
+
+function encrypt(response, request) {
+  cryptography.encrypt(getQuery(request, "key"), getQuery(request, "message"), function(data) {
+    response.writeHead(200, {'Content-Type': 'text/plain'});
+    response.write(data);
+    response.end(); // End Response
+  });
+}
+
+function decrypt(response, request) {
+  cryptography.decrypt(getQuery(request, "key"), getQuery(request, "message"), function(data) {
+    response.writeHead(200, {'Content-Type': 'text/plain'});
+    response.write(data.toString());
+    response.end(); // End Response
+  });
+}
+
+function sign(response, request) {
+  response.writeHead(200, {'Content-Type': 'text/plain'});
+  cryptography.sign(getQuery(request, "key"), getQuery(request, "message"), encrypted_demo, function(data) {
+    response.write(data.toString());
+    response.end(); // End Response
+  });
+}
+
+function verify(response, request) {
+  response.writeHead(200, {'Content-Type': 'text/plain'});
+  cryptography.verify(getQuery(request, "key"), getQuery(request, "message"), encrypted_demo, function(data) {
+    response.write(data.toString());
+    response.end(); // End Response
+  });
+}
 
 function getQuery(request, query) {
   return url.parse(request.url, true).query[query];
