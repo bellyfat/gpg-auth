@@ -36,10 +36,10 @@ exports.decrypt = function(key, message, callback) {
   });
 }
 
-exports.sign = function(key, callback) {
+exports.sign = function(key, message, callback) {
   //...
 }
 
-exports.verify = function(key, callback) {
+exports.verify = function(key, message, callback) {
   //...
 }

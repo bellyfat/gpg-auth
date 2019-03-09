@@ -16,7 +16,11 @@ http.createServer(
   function(request, response) {
     //response.write('URL: ' + getQuery(request, "hello"));
 
-    if(getURL(request) === "/encrypt") {
+    if(getURL(request) === "/favicon.ico") {
+      response.writeHead(200, {'Content-Type': 'image/x-icon'});
+      response.write(getIcon('./images/ico/server.ico'));
+      response.end(); // End Response
+    } else if(getURL(request) === "/encrypt") {
       cryptography.encrypt("github", "Hello There!!!", function(data) {
         response.writeHead(200, {'Content-Type': 'text/plain'});
         response.write(data);
@@ -28,6 +32,22 @@ http.createServer(
         response.write(data.toString());
         response.end(); // End Response
       });
+    } else if(getURL(request) === "/sign") {
+      response.writeHead(200, {'Content-Type': 'text/plain'});
+      cryptography.sign("github", encrypted_demo, function(data) {
+        response.write(data.toString());
+        response.end(); // End Response
+      });
+    } else if(getURL(request) === "/verify") {
+      response.writeHead(200, {'Content-Type': 'text/plain'});
+      cryptography.verify("github", encrypted_demo, function(data) {
+        response.write(data.toString());
+        response.end(); // End Response
+      });
+    } else {
+      response.writeHead(404, {'Content-Type': 'text/plain'});
+      response.write("Path Does Not Exist!!!");
+      response.end(); // End Response
     }
   }
 ).listen(port, host);
@@ -38,4 +58,11 @@ function getQuery(request, query) {
 
 function getURL(request) {
   return url.parse(request.url, true).pathname;
+}
+
+function getIcon(icon) {
+  //var icongen = require('icon-gen');
+  var fs = require('fs');
+  var contents = fs.readFileSync(icon);
+  return contents;
 }
