@@ -43,6 +43,9 @@ http.createServer(
 ).listen(port, host);
 
 function buildJSON(key, object) {
+  if (object === undefined) throw new Error("Cannot Convert to JSON!!! Invalid Object!!!");
+  //console.log("Object: " + object);
+
   var json = new Object()
   json[key] = object;
   return json;
@@ -58,35 +61,56 @@ function encrypt(response, request) {
   //console.log("Base64: " + isBase64(getQuery(request, "message")));
   var message = isBase64(getQuery(request, "message")) ? getQuery(request, "message") : Buffer.from(getQuery(request, "message"), 'base64');
   cryptography.encrypt(getQuery(request, "key"), message, function(data) {
-    response.writeHead(200, {'Content-Type': 'text/plain'});
-    response.write(JSON.stringify(buildJSON("response", data)));
-    response.end(); // End Response
+    response.writeHead(200, {'Content-Type': 'application/json'});
+    try {
+      response.write(JSON.stringify(buildJSON("response", data)));
+      response.end(); // End Response
+    } catch(e) {
+      response.write(JSON.stringify(buildJSON("error", "Message is not valid!!! Cannot Encrypt Message!!!")));
+      response.end(); // End Response
+    }
   });
 }
 
 function decrypt(response, request) {
   var message = isBase64(getQuery(request, "message")) ? getQuery(request, "message") : Buffer.from(getQuery(request, "message"), 'base64');
   cryptography.decrypt(getQuery(request, "key"), message, function(data) {
-    response.writeHead(200, {'Content-Type': 'text/plain'});
-    //response.write(Buffer.from(getQuery(request, "message"), 'base64'));
-    response.write(JSON.stringify(buildJSON("response", data)));
-    response.end(); // End Response
+    response.writeHead(200, {'Content-Type': 'application/json'});
+    try {
+      response.write(JSON.stringify(buildJSON("response", data)));
+      response.end(); // End Response
+    } catch(e) {
+      response.write(JSON.stringify(buildJSON("error", "Message is not valid!!! Cannot Decrypt Message!!!")));
+      response.end(); // End Response
+    }
   });
 }
 
 function sign(response, request) {
-  response.writeHead(200, {'Content-Type': 'text/plain'});
-  cryptography.sign(getQuery(request, "key"), getQuery(request, "message"), encrypted_demo, function(data) {
-    response.write(data.toString());
-    response.end(); // End Response
+  var message = isBase64(getQuery(request, "message")) ? getQuery(request, "message") : Buffer.from(getQuery(request, "message"), 'base64');
+  cryptography.sign(getQuery(request, "key"), message, function(data) {
+    response.writeHead(200, {'Content-Type': 'application/json'});
+    try {
+      response.write(JSON.stringify(buildJSON("response", data)));
+      response.end(); // End Response
+    } catch(e) {
+      response.write(JSON.stringify(buildJSON("error", "Message is not valid!!! Cannot Decrypt Message!!!")));
+      response.end(); // End Response
+    }
   });
 }
 
 function verify(response, request) {
-  response.writeHead(200, {'Content-Type': 'text/plain'});
-  cryptography.verify(getQuery(request, "key"), getQuery(request, "message"), encrypted_demo, function(data) {
-    response.write(data.toString());
-    response.end(); // End Response
+  var message = isBase64(getQuery(request, "message")) ? getQuery(request, "message") : Buffer.from(getQuery(request, "message"), 'base64');
+  cryptography.verify(getQuery(request, "key"), message, function(data) {
+    response.writeHead(200, {'Content-Type': 'text/plain'});
+    try {
+      response.write(JSON.stringify(buildJSON("response", data)));
+      response.end(); // End Response
+    } catch(e) {
+      response.write(JSON.stringify(buildJSON("error", "Message is not valid!!! Cannot Decrypt Message!!!")));
+      response.end(); // End Response
+    }
   });
 }
 
