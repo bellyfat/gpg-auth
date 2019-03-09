@@ -94,7 +94,7 @@ function sign(response, request) {
       response.write(JSON.stringify(buildJSON("response", data)));
       response.end(); // End Response
     } catch(e) {
-      response.write(JSON.stringify(buildJSON("error", "Message is not valid!!! Cannot Decrypt Message!!!")));
+      response.write(JSON.stringify(buildJSON("error", "Message is not valid!!! Cannot Sign Message!!!")));
       response.end(); // End Response
     }
   });
@@ -108,7 +108,7 @@ function verify(response, request) {
       response.write(JSON.stringify(buildJSON("response", data)));
       response.end(); // End Response
     } catch(e) {
-      response.write(JSON.stringify(buildJSON("error", "Message is not valid!!! Cannot Decrypt Message!!!")));
+      response.write(JSON.stringify(buildJSON("error", "Message is not valid!!! Cannot Verify Message!!!")));
       response.end(); // End Response
     }
   });
