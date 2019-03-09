@@ -14,15 +14,16 @@ var cryptography = require('./server_modules/cryptography');
 
 http.createServer(
   function(request, response) {
-    response.writeHead(200, {'Content-Type': 'text/html'});
     //response.write('URL: ' + getQuery(request, "hello"));
 
-    if(request.url === "/encrypt") {
+    if(getURL(request) === "/encrypt") {
       cryptography.encrypt("github", "Hello There!!!", function(data) {
+        response.writeHead(200, {'Content-Type': 'text/plain'});
         response.write(data);
         response.end(); // End Response
       });
-    } else if(request.url === "/decrypt") {
+    } else if(getURL(request) === "/decrypt") {
+      response.writeHead(200, {'Content-Type': 'text/plain'});
       cryptography.decrypt("github", encrypted_demo, function(data) {
         response.write(data.toString());
         response.end(); // End Response
@@ -35,3 +36,6 @@ function getQuery(request, query) {
   return url.parse(request.url, true).query[query];
 }
 
+function getURL(request) {
+  return url.parse(request.url, true).pathname;
+}
