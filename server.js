@@ -105,6 +105,8 @@ function verify(response, request) {
   cryptography.verify(getQuery(request, "key"), message, function(data) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     try {
+      //console.log(data.toString()); N with Tilde is Fine Here: ñ
+      // https://cryptii.com/pipes/decimal-text - Decode Buffer as 8 bit Unsigned Integer (Decimal) - N With Tilde Works Fine
       response.write(JSON.stringify(buildJSON("response", data)));
       response.end(); // End Response
     } catch(e) {

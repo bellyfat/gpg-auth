@@ -37,9 +37,33 @@ exports.decrypt = function(key, message, callback) {
 }
 
 exports.sign = function(key, message, callback) {
-  //...
+  var args = [
+    '--default-key', key
+  ];
+
+  gpg.clearsign(message, args, function(err, contents) {
+    try {
+      //console.log(contents.toString());
+      callback(contents);
+    } catch(e) {
+      console.log("Exception: \"" + e + "\"\nReason: \"" + err + "\""); // gpg: public key decryption failed: Cannot allocate memory
+      callback("Exception: \"" + e + "\"\nReason: \"" + err + "\"");
+    }
+  });
 }
 
 exports.verify = function(key, message, callback) {
-  //...
+  var args = [
+    '--default-key', key
+  ];
+
+  gpg.verifySignature(message, args, function(err, contents) {
+    try {
+      //console.log(contents.toString());
+      callback(contents);
+    } catch(e) {
+      console.log("Exception: \"" + e + "\"\nReason: \"" + err + "\""); // gpg: public key decryption failed: Cannot allocate memory
+      callback("Exception: \"" + e + "\"\nReason: \"" + err + "\"");
+    }
+  });
 }
