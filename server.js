@@ -126,7 +126,7 @@ function sign(response, request) {
 function verify(response, request) {
   var message = isBase64(getQuery(request, "message")) ? Buffer.from(getQuery(request, "message"), 'base64') : getQuery(request, "message");
   cryptography.verify(getQuery(request, "key"), message, function(data) {
-    response.writeHead(200, {'Content-Type': 'text/plain'});
+    response.writeHead(200, {'Content-Type': 'application/json'});
     try {
       //console.log(data.toString()); N with Tilde is Fine Here: ñ
       // https://cryptii.com/pipes/decimal-text - Decode Buffer as 8 bit Unsigned Integer (Decimal) - N With Tilde Works Fine
