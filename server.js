@@ -44,7 +44,7 @@ http.createServer(
       response.write("<body bgcolor='black'><h1 style='color: #90EE90'>The GUI is Not Ready Yet!!!</h1></body>");
       response.end(); // End Response
     } else {
-      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.writeHead(404, {'Content-Type': 'text/html'});
       response.write("<title>GPG Auth GUI</title>");
       response.write("<body bgcolor='black'><h1 style='color: #90EE90'>Path Does Not Exist!!!</h1></body>");
       response.end(); // End Response
