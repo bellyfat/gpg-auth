@@ -61,7 +61,7 @@ try {
 } catch (err){
    console.log("Use NW.js to run this program!!! Download at https://nwjs.io/!!!");
    console.log("Call the NW.js app with \"path/to/nwjs.app/Contents/MacOS/nwjs .\"");
-   process.exit(1);
+   //process.exit(1); - Disabled So I can see console.log with nodemon.
 }
 
 function buildJSON(key, object) {
@@ -81,10 +81,11 @@ function failme(response, error) {
 
 function encrypt(response, request) {
   //console.log("Base64: " + isBase64(getQuery(request, "message")));
-  var message = isBase64(getQuery(request, "message")) ? getQuery(request, "message") : Buffer.from(getQuery(request, "message"), 'base64');
+  var message = isBase64(getQuery(request, "message")) ? Buffer.from(getQuery(request, "message"), 'base64') : getQuery(request, "message");
   cryptography.encrypt(getQuery(request, "key"), message, function(data) {
     response.writeHead(200, {'Content-Type': 'application/json'});
     try {
+      //console.log("Message: " + message); // There is a bug in base64 detection with 4 characters exactly and the message is corrupted
       response.write(JSON.stringify(buildJSON("response", data)));
       response.end(); // End Response
     } catch(e) {
@@ -95,7 +96,7 @@ function encrypt(response, request) {
 }
 
 function decrypt(response, request) {
-  var message = isBase64(getQuery(request, "message")) ? getQuery(request, "message") : Buffer.from(getQuery(request, "message"), 'base64');
+  var message = isBase64(getQuery(request, "message")) ? Buffer.from(getQuery(request, "message"), 'base64') : getQuery(request, "message");
   cryptography.decrypt(getQuery(request, "key"), message, function(data) {
     response.writeHead(200, {'Content-Type': 'application/json'});
     try {
@@ -109,7 +110,7 @@ function decrypt(response, request) {
 }
 
 function sign(response, request) {
-  var message = isBase64(getQuery(request, "message")) ? getQuery(request, "message") : Buffer.from(getQuery(request, "message"), 'base64');
+  var message = isBase64(getQuery(request, "message")) ? Buffer.from(getQuery(request, "message"), 'base64') : getQuery(request, "message");
   cryptography.sign(getQuery(request, "key"), message, function(data) {
     response.writeHead(200, {'Content-Type': 'application/json'});
     try {
@@ -123,7 +124,7 @@ function sign(response, request) {
 }
 
 function verify(response, request) {
-  var message = isBase64(getQuery(request, "message")) ? getQuery(request, "message") : Buffer.from(getQuery(request, "message"), 'base64');
+  var message = isBase64(getQuery(request, "message")) ? Buffer.from(getQuery(request, "message"), 'base64') : getQuery(request, "message");
   cryptography.verify(getQuery(request, "key"), message, function(data) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     try {
@@ -140,7 +141,17 @@ function verify(response, request) {
 
 function isBase64(bytes) {
   // https://stackoverflow.com/a/48770228/6828099
-  return Buffer.from(bytes, 'base64').toString('base64') !== bytes;
+  //console.log("Bytes: " + bytes + " | Base64: " + Buffer.from(bytes, 'base64').toString('base64'));
+  //console.log("Encoded: " + Buffer.from(bytes).toString('base64') + " | Decoded: " + Buffer.from(Buffer.from(bytes), 'base64'));
+
+  // I have determined that non-base64 strings such as "cool" are valid base64 strings.
+  // That means there is no way to tell if base64 or not unless I enforce the legal definition
+  // of a base64 string. So, I am going to require that base64 strings end with an equal sign.
+  //console.log("Last Character: " + bytes.substr(-1));
+  if(bytes.substr(-1) !== "=")
+    return false;
+
+  return Buffer.from(bytes, 'base64').toString('base64') === bytes;
 }
 
 function getQuery(request, query) {
