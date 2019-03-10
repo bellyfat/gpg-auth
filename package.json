@@ -1,5 +1,6 @@
 {
   "name": "gpg-auth",
+  "main": "server.js",
   "description": "An attempt at getting rid of password authentication on the web!!!",
   "author": {
     "name": "Alex Contento",

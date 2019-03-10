@@ -34,6 +34,15 @@ http.createServer(
       response.writeHead(200, {'Content-Type': 'image/x-icon'});
       response.write(getIcon('./images/ico/server.ico'));
       response.end(); // End Response
+    } else if(getURL(request) === "/") {
+      response.writeHead(200, {'Content-Type': 'application/json'});
+      response.write(JSON.stringify(buildJSON("error", "This Server Is Not Meant To Be Accessed Directly!!!")));
+      response.end(); // End Response
+    } else if(getURL(request) === "/gui-response") {
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.write("<title>GPG Auth GUI</title>");
+      response.write("<body bgcolor='black'><h1 style='color: #90EE90'>The GUI is Not Ready Yet!!!</h1></body>");
+      response.end(); // End Response
     } else {
       response.writeHead(404, {'Content-Type': 'text/plain'});
       response.write("Path Does Not Exist!!!");
@@ -41,6 +50,18 @@ http.createServer(
     }
   }
 ).listen(port, host);
+
+try {
+  var nw = require('nw.gui');
+  nw.Window.open('http://' + host + ":" + port + "/gui-response", {}, function(win) {
+    var os = require('os');
+    console.log('You are running on', os.platform());
+  });
+} catch (err){
+   console.log("Use NW.js to run this program!!! Download at https://nwjs.io/!!!");
+   console.log("Call the NW.js app with \"path/to/nwjs.app/Contents/MacOS/nwjs .\"");
+   process.exit(0);
+}
 
 function buildJSON(key, object) {
   if (object === undefined) throw new Error("Cannot Convert to JSON!!! Invalid Object!!!");
