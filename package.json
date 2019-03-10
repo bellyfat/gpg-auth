@@ -1,11 +1,19 @@
 {
   "name": "gpg-auth",
+  "version": "0.0.1-dev",
   "main": "server.js",
   "description": "An attempt at getting rid of password authentication on the web!!!",
   "author": {
     "name": "Alex Contento",
     "email": "bagome0054@ung.edu",
     "url": "https://web.senorcontento.com/"
+  },
+  "homepage": "https://github.com/bgbrandongomez/gpg-auth",
+  "bugs": "https://github.com/bgbrandongomez/gpg-auth/issues",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bgbrandongomez/gpg-auth.git"
   },
   "dependencies": {
     "gpg": "^0.6.0"
