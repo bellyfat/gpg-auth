@@ -58,7 +58,7 @@ try {
     var os = require('os');
     console.log('You are running on', os.platform());
   });
-} catch (err){
+} catch(error) {
    console.log("Use NW.js to run this program!!! Download at https://nwjs.io/!!!");
    console.log("Call the NW.js app with \"path/to/nwjs.app/Contents/MacOS/nwjs .\"");
    //process.exit(1); - Disabled So I can see console.log with nodemon.
@@ -144,6 +144,7 @@ function isBase64(bytes) {
   //console.log("Bytes: " + bytes + " | Base64: " + Buffer.from(bytes, 'base64').toString('base64'));
   //console.log("Encoded: " + Buffer.from(bytes).toString('base64') + " | Decoded: " + Buffer.from(Buffer.from(bytes), 'base64'));
 
+  // https://stackoverflow.com/a/36571117/6828099
   // I have determined that non-base64 strings such as "cool" are valid base64 strings.
   // That means there is no way to tell if base64 or not unless I enforce the legal definition
   // of a base64 string. So, I am going to require that base64 strings end with an equal sign.
