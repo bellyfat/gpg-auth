@@ -61,7 +61,7 @@ try {
 } catch (err){
    console.log("Use NW.js to run this program!!! Download at https://nwjs.io/!!!");
    console.log("Call the NW.js app with \"path/to/nwjs.app/Contents/MacOS/nwjs .\"");
-   process.exit(0);
+   process.exit(1);
 }
 
 function buildJSON(key, object) {
